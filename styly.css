@@ -1,0 +1,51 @@
+body {background-color: #ccffcc;
+padding-left: 4rem;
+font-family: Arial, Helvetica, sans-serif;}
+h1   {color: #33cc33;}
+h1 {text-align:center;}
+h2 {color: #33cc33;}
+h2 {text-align:center;}
+h3 {color: #33cc33;}
+h3 {text-align:center;}
+
+a:link {
+  color: green;
+  background-color: transparent;
+  text-decoration: none;
+}
+a:visited {
+  color: #ffcc99;
+  background-color: transparent;
+  text-decoration: none;
+}
+a:hover {
+  color: green;
+  background-color: transparent;
+  text-decoration: underline;
+}
+a:active {
+  color: #ffcc99;
+  background-color: transparent;
+  text-decoration: underline;
+}
+
+button {font-size:large ;}
+
+table, th, td {
+  font-family: 'Courier New', Courier, monospace;
+  border: 2px solid black;
+  border-collapse: collapse;
+  text-align: center; }
+
+th, td {padding: 15px}
+th{background-color:violet;}
+tr:nth-child(even) {
+  background-color: #ffdebd;}
+tr:nth-child(odd) {
+  background-color:#f6c0f7}
+tr:hover{background-color: aquamarine;}
+
+
+.kalendářovátabulka{
+  font-style: italic;
+}
