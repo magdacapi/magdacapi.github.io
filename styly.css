@@ -45,7 +45,16 @@ tr:nth-child(odd) {
   background-color:#f6c0f7}
 tr:hover{background-color: aquamarine;}
 
-
 .kalendářovátabulka{
-  font-style: italic;
+  font-style: italic;} 
+
+.mycontainer{
+  display: flex;
 }
+.mycontainer > div {width: 33%;
+padding: 15px;
+ border: 2px solid black;}
+
+
+
+
