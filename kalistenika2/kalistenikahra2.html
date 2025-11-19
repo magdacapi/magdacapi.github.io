@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+
+<html lang="cs">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kalistenika.cz – Mini Hra</title>
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+      font-family: Arial, sans-serif;
+      background: #111;
+      color: white;
+      user-select: none;
+    }
+    #gameCanvas {
+      display: block;
+      margin: 0 auto;
+      background: #222;
+    }
+    #ui {
+      position: absolute;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 24px;
+      font-weight: bold;
+    }
+    #startScreen {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      background: rgba(0,0,0,0.85);
+      color: white;
+      text-align: center;
+      font-size: 28px;
+    }
+    #startBtn {
+      margin-top: 20px;
+      padding: 10px 20px;
+      font-size: 22px;
+      cursor: pointer;
+      background: #e91e63;
+      border: none;
+      color: white;
+      border-radius: 8px;
+    }
+  </style>
+</head>
+<body>
+  <div id="ui">Skóre: <span id="score">0</span></div>
+  <div id="startScreen">
+    <h1>Kalistenika.cz – Chytej hrazdy!</h1>
+    <p>Pohybuj se doleva a doprava a chytej padající hrazdy, abys získal body.</p>
+    <p>Vyhýbej se činkám, jinak hra končí!</p>
+    <button id="startBtn">Start</button>
+  </div>
+  <canvas id="gameCanvas" width="480" height="720"></canvas>
+
+  <script>
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+
+    // Načtení obrázků
+    const imgPlayer = new Image();
+    imgPlayer.src = "musclesman.jpg";
+
+    const imgHrazda = new Image();
+    imgHrazda.src = "cinka.jpg";
+
+    const imgCinka = new Image();
+    imgCinka.src = "hranolky.jpg";
+
+    const player = {
+      x: canvas.width / 2 - 40,
+      y: canvas.height - 120,
+      width: 80,
+      height: 100,
+      speed: 6,
+      dx: 0
+    };
+
+    let items = [];
+    let score = 0;
+    let gameOver = false;
+
+    function drawPlayer() {
+      ctx.drawImage(imgPlayer, player.x, player.y, player.width, player.height);
+    }
+
+    function createItem() {
+      const isGood = Math.random() < 0.7; // 70% šance na hrazdu
+      items.push({
+        x: Math.random() * (canvas.width - 50),
+        y: -60,
+        width: 60,
+        height: 60,
+        speed: 3 + Math.random() * 2,
+        good: isGood
+      });
+    }
+
+    function drawItems() {
+      items.forEach(item => {
+        if (item.good) {
+          ctx.drawImage(imgHrazda, item.x, item.y, item.width, item.height);
+        } else {
+          ctx.drawImage(imgCinka, item.x, item.y, item.width, item.height);
+        }
+      });
+    }
+
+    function updateItems() {
+      items.forEach((item, index) => {
+        item.y += item.speed;
+
+        if (item.y > canvas.height) {
+          items.splice(index, 1);
+        }
+
+        // Kolize
+        if (
+          item.x < player.x + player.width &&
+          item.x + item.width > player.x &&
+          item.y < player.y + player.height &&
+          item.y + item.height > player.y
+        ) {
+          if (item.good) {
+            score++;
+            document.getElementById('score').textContent = score;
+            items.splice(index, 1);
+          } else {
+            gameOver = true;
+          }
+        }
+      });
+    }
+
+    function movePlayer() {
+      player.x += player.dx;
+      if (player.x < 0) player.x = 0;
+      if (player.x + player.width > canvas.width)
+        player.x = canvas.width - player.width;
+    }
+
+    function clearCanvas() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+
+    function gameLoop() {
+      if (gameOver) {
+        alert('Konec hry! Skóre: ' + score + '\\nNavštivte nás na Kalistenika.cz');
+        document.location.reload();
+        return;
+      }
+
+      clearCanvas();
+      drawPlayer();
+      drawItems();
+      updateItems();
+      movePlayer();
+
+      requestAnimationFrame(gameLoop);
+    }
+
+    // Ovládání
+    document.addEventListener('keydown', e => {
+      if (e.key === 'ArrowLeft') player.dx = -player.speed;
+      if (e.key === 'ArrowRight') player.dx = player.speed;
+    });
+
+    document.addEventListener('keyup', e => {
+      if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') player.dx = 0;
+    });
+
+    // Start hry
+    document.getElementById('startBtn').addEventListener('click', () => {
+      document.getElementById('startScreen').style.display = 'none';
+      setInterval(createItem, 900);
+      gameLoop();
+    });
+  </script>
+</body>
+</html>
